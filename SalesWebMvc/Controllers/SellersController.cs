@@ -35,6 +35,15 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Seller seller)
         {
+            //Validação para não permitir gravar em branco no banco de dados
+            //Quando o JavaScript estiver desabilitado no Browse do Usuário
+            var departments = _departmentService.FindAll();
+            var viewModel = new SellerFormViewModel { Departments = departments, Seller = seller };
+            if (ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+            //Incluíndo no banco de dados
             _sellerService.Insert(seller);
             return RedirectToAction(nameof(Index));
         }
@@ -90,7 +99,16 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Seller seller)
         {
-            if(id != seller.Id)
+            //Validação para não permitir gravar em branco no banco de dados
+            //Quando o JavaScript estiver desabilitado no Browse do Usuário
+            var departments = _departmentService.FindAll();
+            var viewModel = new SellerFormViewModel { Departments = departments, Seller = seller };
+            if (ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+            //Atudalizando no banco de dados
+            if (id != seller.Id)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
             }
